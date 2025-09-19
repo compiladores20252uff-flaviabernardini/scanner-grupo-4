@@ -11,7 +11,7 @@ NUM = [0-9][0-9]*
 
 Keyword = "else" | "if" | "int" | "return" | "void" | "while"
 Comment = \/\*+.*\*+\/
-Parenteses = \( | \)
+Parentheses = \( | \)
 Brackets = \[ | \]
 Braces = \{ | \}
 Addop = \+ | -
@@ -33,7 +33,7 @@ Mulop = \* | \/
 
     {Keyword}   { System.out.printf("KEYWORD: %s\n", yytext());}
 
-    {Parenteses}    { System.out.printf("PARENTHESES: %s\n", yytext());}
+    {Parentheses}    { System.out.printf("PARENTHESES: %s\n", yytext());}
     {Braces}    { System.out.printf("BRACES: %s\n", yytext());}
     {Brackets}  { System.out.printf("BRACKETS: %s\n", yytext());}
     {Comment}   { System.out.printf("COMMENT: %s\n", yytext());}
