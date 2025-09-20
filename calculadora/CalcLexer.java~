@@ -277,7 +277,7 @@ public class CalcLexer {
   /* user code: */
 
 // será usado nas ações abaixo
-private Token t(TokenType tt) {
+private Token formataToken(TokenType tt) {
   return new Token(tt, yytext(), yyline + 1, yycolumn + 1);
 }
 
@@ -709,52 +709,52 @@ private Token t(TokenType tt) {
           // fall through
           case 14: break;
           case 3:
-            { return t(TokenType.LPAREN);
+            { return formataToken(TokenType.LPAREN);
             }
           // fall through
           case 15: break;
           case 4:
-            { return t(TokenType.RPAREN);
+            { return formataToken(TokenType.RPAREN);
             }
           // fall through
           case 16: break;
           case 5:
-            { return t(TokenType.STAR);
+            { return formataToken(TokenType.STAR);
             }
           // fall through
           case 17: break;
           case 6:
-            { return t(TokenType.PLUS);
+            { return formataToken(TokenType.PLUS);
             }
           // fall through
           case 18: break;
           case 7:
-            { return t(TokenType.MINUS);
+            { return formataToken(TokenType.MINUS);
             }
           // fall through
           case 19: break;
           case 8:
-            { return t(TokenType.SLASH);
+            { return formataToken(TokenType.SLASH);
             }
           // fall through
           case 20: break;
           case 9:
-            { return t(TokenType.INT);
+            { return formataToken(TokenType.INT);
             }
           // fall through
           case 21: break;
           case 10:
-            { return t(TokenType.POW);
+            { return formataToken(TokenType.POW);
             }
           // fall through
           case 22: break;
           case 11:
-            { return t(TokenType.INT_DIV);
+            { return formataToken(TokenType.INT_DIV);
             }
           // fall through
           case 23: break;
           case 12:
-            { return t(TokenType.FLOAT);
+            { return formataToken(TokenType.FLOAT);
             }
           // fall through
           case 24: break;
