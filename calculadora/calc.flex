@@ -10,47 +10,46 @@
 %{
 
 // será usado nas ações abaixo
-private Token t(TokenType tt) {
+private Token formataToken(TokenType tt) {
   return new Token(tt, yytext(), yyline + 1, yycolumn + 1);
 }
 
 %}
 
-/* --------- DEFINIÇÕES (REGEX) --------- */
+/* regex */
 WHITESPACE   = [ \t\r\n\f]+
 INT          = 0|[1-9][0-9]*
 FLOAT        = [0-9]+"."[0-9]+   // floats simples, sem notação científica
 
 %%
 
-/* --------- REGRAS --------- */
 
-/* Operadores compostos – precisam vir antes dos simples */
-"**"         { return t(TokenType.POW); }
-"//"         { return t(TokenType.INT_DIV); }
+/* Operadores compostos – precisam vir antes dos simples pra garanitir tokens de maior tamanho possível */
+"**"         { return formataToken(TokenType.POW); }
+"//"         { return formataToken(TokenType.INT_DIV); }
 
 /* Operadores simples e parênteses */
-"("          { return t(TokenType.LPAREN); }
-")"          { return t(TokenType.RPAREN); }
-"+"          { return t(TokenType.PLUS); }
-"-"          { return t(TokenType.MINUS); }
-"*"          { return t(TokenType.STAR); }
-"/"          { return t(TokenType.SLASH); }
+"("          { return formataToken(TokenType.LPAREN); }
+")"          { return formataToken(TokenType.RPAREN); }
+"+"          { return formataToken(TokenType.PLUS); }
+"-"          { return formataToken(TokenType.MINUS); }
+"*"          { return formataToken(TokenType.STAR); }
+"/"          { return formataToken(TokenType.SLASH); }
 
-/* Números (ordem importa: FLOAT antes de INT) */
-{FLOAT}      { return t(TokenType.FLOAT); }
-{INT}        { return t(TokenType.INT); }
+/* Números, ordem importa primeiro FLOAT depois INT */
+{FLOAT}      { return formataToken(TokenType.FLOAT); }
+{INT}        { return formataToken(TokenType.INT); }
 
-/* Espaços em branco: ignorar */
+/* Espaços em branco */
 {WHITESPACE} { /* skip */ }
 
 /* EOF */
 <<EOF>>      { return new Token(TokenType.EOF, "", yyline + 1, yycolumn + 1); }
 
-/* Qualquer outra coisa: erro */
+/* Qualquer coisa diferente lança erro */
 .            {
                throw new RuntimeException(
-                 "Erro léxico: símbolo inválido '" + yytext() +
+                 "Erro lexico o símbolo é inválido '" + yytext() +
                  "' em " + (yyline + 1) + ":" + (yycolumn + 1)
                );
              }

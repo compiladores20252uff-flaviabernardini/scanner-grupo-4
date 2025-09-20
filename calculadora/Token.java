@@ -5,14 +5,14 @@ public class Token {
   public final int column;
 
   public Token(TokenType type, String lexeme, int line, int column) {
-    this.type = type;
-    this.lexeme = lexeme;
-    this.line = line;
-    this.column = column;
+      this.type = type;
+      this.lexeme = lexeme;
+      this.line = line;
+      this.column = column;
   }
 
   @Override
   public String toString() {
-    return String.format("%s('%s') @ %d:%d", type, lexeme, line, column);
+      return String.format("O token { tipo=%s, lexema='%s', linha=%d, coluna=%d }", type, lexeme, line, column);
   }
 }
