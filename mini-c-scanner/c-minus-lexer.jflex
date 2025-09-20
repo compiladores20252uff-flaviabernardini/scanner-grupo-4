@@ -1,16 +1,26 @@
+
+
 %%
 
 %class c_minus
 %standalone
+%line
+%column
+%type Token
 
-Digit = [0-9]
-Letter = [a-zA-Z]
+%{
+
+private Token t(TokenType tt) {
+  return new Token(tt, yytext(), yyline + 1, yycolumn + 1);
+}
+
+%}
 
 ID = [a-zA-Z][a-zA-Z]*
 NUM = [0-9][0-9]* 
 
 Keyword = "else" | "if" | "int" | "return" | "void" | "while"
-Comment = \/\*+.*\*+\/
+Comment = \/\*.*\*\/
 Parentheses = \( | \)
 Brackets = \[ | \]
 Braces = \{ | \}
@@ -21,25 +31,39 @@ Mulop = \* | \/
 %%
 
 <YYINITIAL> {
+ 
+    {ID}        { return t(TokenType.ID); }
+    {NUM}       { return t(TokenType.NUM); }
 
-    {Keyword}   { System.out.printf("KEYWORD: %s\n", yytext()); }
-
-    {ID}        { System.out.printf("ID: %s\n", yytext()); }
-    {NUM}       { System.out.printf("NUM: %s\n", yytext()); }
-
-    {Addop}     { System.out.printf("ADDOP: %s\n", yytext()); }
-    {Mulop}     { System.out.printf("MULOP: %s\n", yytext()); }
-    {Relop}     { System.out.printf("RELOP: %s\n", yytext()); }
-
-    {Keyword}   { System.out.printf("KEYWORD: %s\n", yytext());}
-
-    {Parentheses}    { System.out.printf("PARENTHESES: %s\n", yytext());}
-    {Braces}    { System.out.printf("BRACES: %s\n", yytext());}
-    {Brackets}  { System.out.printf("BRACKETS: %s\n", yytext());}
-    {Comment}   { System.out.printf("COMMENT: %s\n", yytext());}
+    "+"     { return t(TokenType.PLUS); }
+    "-"     { return t(TokenType.MINUS); }
+    "*"     { return t(TokenType.STAR); }
+    "/"     { return t(TokenType.SLASH); }
+    "<"     { return t(TokenType.LESSTHAN); }
+    "<="     { return t(TokenType.LESSTHANEQ); }
+    ">"     { return t(TokenType.GREATERTHAN); }
+    ">="     { return t(TokenType.GREATERTHANEQ); }
+    "=="     { return t(TokenType.EQUAL); }
+    "!="     { return t(TokenType.NOTEQUAL); }
+    "="     { return t(TokenType.ASSIGN); }
     
-    ","         { System.out.printf("COMMA: %s\n", yytext());}
-    ";"         { System.out.printf("SEMICOLON: %s\n", yytext());}
+    "("     { return t(TokenType.LPAREN); }
+    ")"     { return t(TokenType.RPAREN); }
+    "{"     { return t(TokenType.LBRAC); }
+    "}"     { return t(TokenType.RBRAC); }
+    "["     { return t(TokenType.LBRACK); }
+    "]"     { return t(TokenType.RBRACK); }
+    {Comment}   { return t(TokenType.COMMENT);}
+
+    "int"       { return t(TokenType.INT); }
+    "if"        { return t(TokenType.IF); }
+    "else"      { return t(TokenType.ELSE); }
+    "while"     { return t(TokenType.WHILE); }
+    "return"    { return t(TokenType.RETURN); }
+    "void"      { return t(TokenType.VOID); }
+    
+    ","         { return t(TokenType.COMMA);}
+    ";"         { return t(TokenType.SEMICOLON);}
 
     [ \t\r\n]+  { /* Não faz nada */ }
 
