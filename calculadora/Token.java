@@ -1,18 +1,18 @@
 public class Token {
-  public final TokenType type;
-  public final String lexeme;
-  public final int line;
-  public final int column;
+    public final TokenType type;
+    public final String lexeme;
+    public final int line;
+    public final int column;
 
-  public Token(TokenType type, String lexeme, int line, int column) {
-    this.type = type;
-    this.lexeme = lexeme;
-    this.line = line;
-    this.column = column;
-  }
+    public Token(TokenType type, String lexeme, int line, int column) {
+        this.type = type;
+        this.lexeme = lexeme;
+        this.line = line;
+        this.column = column;
+    }
 
-  @Override
-  public String toString() {
-    return String.format("%s('%s') @ %d:%d", type, lexeme, line, column);
-  }
+    @Override
+    public String toString() {
+        return String.format("O token { tipo=%s, lexema='%s', linha=%d, coluna=%d }", type, lexeme, line, column);
+    }
 }
