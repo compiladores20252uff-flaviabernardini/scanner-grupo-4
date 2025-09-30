@@ -1,0 +1,7 @@
+INT('int') @ 1:1
+ID('var') @ 1:5
+SEMICOLON(';') @ 1:8
+ID('var') @ 2:1
+ASSIGN('=') @ 2:5
+NUM('19') @ 2:7
+SEMICOLON(';') @ 2:9

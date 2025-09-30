@@ -56,5 +56,5 @@ Comment = \/\*([^*]|\*+[^*/])*\*+\/
 
     [ \t\r\n]+  {  }
 
-    .        { return t(TokenType.INVALID);}
+    .        { return t(TokenType.ERROR);}
 }
