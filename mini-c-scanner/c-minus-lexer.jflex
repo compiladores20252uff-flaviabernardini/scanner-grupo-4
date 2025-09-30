@@ -2,7 +2,6 @@
 %%
 
 %class c_minus
-%standalone
 %line
 %column
 %type Token
