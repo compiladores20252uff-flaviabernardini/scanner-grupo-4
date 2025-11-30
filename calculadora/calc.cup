@@ -1,0 +1,47 @@
+// calc.cup — parser da calculadora (valor double)
+import java_cup.runtime.Symbol;
+
+parser code {:
+  public static void main(String[] args) throws Exception {
+    java.io.Reader r =
+      (args.length == 0 || "-".equals(args[0]))
+        ? new java.io.InputStreamReader(System.in)
+        : new java.io.FileReader(args[0]);
+    CalcLexerCup lx = new CalcLexerCup(r); // lexer “para CUP”
+    CalcParser p = new CalcParser(lx);
+    Double val = (Double) p.parse().value;
+    System.out.println("RESULTADO = " + val);
+  }
+:};
+
+terminal LPAREN, RPAREN, PLUS, MINUS, STAR, SLASH, INT_DIV, POW;
+terminal Integer INT;
+terminal Double FLOAT;
+
+non terminal Double E, T, P, F;   // P lida com potência direita-assoc
+
+precedence left PLUS, MINUS;
+precedence left STAR, SLASH, INT_DIV;
+precedence right POW;
+
+start with E;
+
+E ::= E: e1 PLUS T: t        {: RESULT = e1 + t; :}
+    | E: e1 MINUS T: t       {: RESULT = e1 - t; :}
+    | T: t                   {: RESULT = t;     :}
+    ;
+
+T ::= T: t1 STAR P: p        {: RESULT = t1 * p; :}
+    | T: t1 SLASH P: p       {: RESULT = t1 / p; :}
+    | T: t1 INT_DIV P: p     {: RESULT = Math.floor(t1 / p); :}
+    | P: p                   {: RESULT = p; :}
+    ;
+
+P ::= P: p1 POW P: p2        {: RESULT = Math.pow(p1, p2); :} // direita-assoc
+    | F: f                   {: RESULT = f; :}
+    ;
+
+F ::= LPAREN E: e RPAREN     {: RESULT = e; :}
+    | INT: i                 {: RESULT = i.doubleValue(); :}
+    | FLOAT: d               {: RESULT = d; :}
+    ;
