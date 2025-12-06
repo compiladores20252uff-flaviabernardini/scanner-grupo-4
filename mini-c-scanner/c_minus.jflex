@@ -1,6 +1,6 @@
-
 %%
 
+%cup
 %class c_minus
 %line
 %column
