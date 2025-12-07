@@ -1,3 +1,4 @@
+package old;
 public enum TokenType {
   ID, NUM,
   LPAREN, RPAREN, LBRAC, RBRAC, LBRACK, RBRACK, COMMENT,
