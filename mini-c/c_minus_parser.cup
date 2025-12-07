@@ -1,5 +1,3 @@
-// c_minus.cup — parser da linguagem C-
-
 import java_cup.runtime.Symbol;
 
 parser code {:
@@ -8,142 +6,197 @@ parser code {:
       (args.length == 0 || "-".equals(args[0]))
         ? new java.io.InputStreamReader(System.in)
         : new java.io.FileReader(args[0]);
-    CMinusLexerCup lx = new CMinusLexerCup(r); // lexer “para CUP”
+    CMinusLexerCup lx = new CMinusLexerCup(r);
     CMinusParser p = new CMinusParser(lx);
-    System.out.println(p.parse().value);
+    Symbol result = p.parse();
+    if (result.value != null) {
+      System.out.println("=== ÁRVORE SINTÁTICA ===\n");
+      System.out.println(result.value);
+    }
   }
 :};
 
-terminal ID, NUM, LPAREN, RPAREN, LBRAC, RBRAC, LBRACK, RBRACK, PLUS, MINUS, STAR, SLASH;
-terminal LESSTHAN, LESSTHANEQ, GREATERTHAN, GREATERTHANEQ, EQUAL, NOTEQUAL, ASSIGN, SEMICOLON, COMMA;
-terminal INT, ELSE, IF, RETURN, VOID, WHILE;
+terminal String ID, NUM;
+terminal String INT, VOID, IF, ELSE, WHILE, RETURN;
+terminal String PLUS, MINUS, STAR, SLASH;
+terminal String LESSTHAN, LESSTHANEQ, GREATERTHAN, GREATERTHANEQ, EQUAL, NOTEQUAL, ASSIGN;
+terminal LPAREN, RPAREN, LBRAC, RBRAC, LBRACK, RBRACK, SEMICOLON, COMMA;
 
-non terminal program, declaration_list, declaration, var_declaration, fun_declaration;
-non terminal type_specifier, params, param_list, param;
-non terminal compound_stmt, local_declarations, statement_list, statement;
-non terminal expression_stmt, selection_stmt, iteration_stmt, return_stmt;
-non terminal expression, var, simple_expression, relop, additive_expression, addop, term, mulop, factor, call, args, arg_list;
+non terminal ASTNode program, declaration_list, declaration, var_declaration, fun_declaration;
+non terminal ASTNode type_specifier, params, param_list, param;
+non terminal ASTNode compound_stmt, local_declarations, statement_list, statement;
+non terminal ASTNode expression_stmt, selection_stmt, iteration_stmt, return_stmt;
+non terminal ASTNode expression, var, simple_expression, relop, additive_expression, addop;
+non terminal ASTNode term, mulop, factor, call, args, arg_list;
 
 precedence nonassoc IF;
 precedence nonassoc ELSE;
 
 start with program;
 
-program ::= declaration_list:dl;
-
-declaration_list ::= declaration_list:dl declaration:dcl
-    | declaration:dcl
+program ::= declaration_list:dl
+    {: RESULT = new ASTNode("PROGRAM").addChild(dl); :}
     ;
 
-declaration ::= var_declaration:vard
-    | fun_declaration:fund
+declaration_list ::= declaration_list:dl declaration:d
+    {: RESULT = dl.addChild(d); :}
+    | declaration:d
+    {: RESULT = new ASTNode("DECLARATION_LIST").addChild(d); :}
     ;
 
-var_declaration ::= type_specifier:typspc ID SEMICOLON
-    | type_specifier:typspc ID LBRACK NUM RBRACK SEMICOLON
+declaration ::= var_declaration:vd
+    {: RESULT = vd; :}
+    | fun_declaration:fd
+    {: RESULT = fd; :}
     ;
 
-type_specifier ::= INT
-    | VOID
+var_declaration ::= type_specifier:ts ID:id SEMICOLON
+    {: RESULT = new ASTNode("VAR_DECL").addChildren(ts, new ASTNode("ID", id)); :}
+    | type_specifier:ts ID:id LBRACK NUM:n RBRACK SEMICOLON
+    {: RESULT = new ASTNode("ARRAY_DECL").addChildren(ts, new ASTNode("ID", id), new ASTNode("SIZE", n)); :}
     ;
 
-fun_declaration ::= type_specifier:typspc ID LPAREN params RPAREN compound_stmt:cs
+type_specifier ::= INT:i
+    {: RESULT = new ASTNode("TYPE", "INT"); :}
+    | VOID:v
+    {: RESULT = new ASTNode("TYPE", "VOID"); :}
+    ;
+
+fun_declaration ::= type_specifier:ts ID:id LPAREN params:p RPAREN compound_stmt:cs
+    {: RESULT = new ASTNode("FUN_DECL").addChildren(ts, new ASTNode("ID", id), p, cs); :}
     ;
 
 params ::= param_list:pl
+    {: RESULT = new ASTNode("PARAMS").addChild(pl); :}
     | VOID
+    {: RESULT = new ASTNode("PARAMS", "VOID"); :}
     ;
 
 param_list ::= param_list:pl COMMA param:p
+    {: RESULT = pl.addChild(p); :}
     | param:p
+    {: RESULT = new ASTNode("PARAM_LIST").addChild(p); :}
     ;
 
-param ::= type_specifier:typspc ID
-    | type_specifier:typspc ID LBRACK RBRACK
+param ::= type_specifier:ts ID:id
+    {: RESULT = new ASTNode("PARAM").addChildren(ts, new ASTNode("ID", id)); :}
+    | type_specifier:ts ID:id LBRACK RBRACK
+    {: RESULT = new ASTNode("ARRAY_PARAM").addChildren(ts, new ASTNode("ID", id)); :}
     ;
 
 compound_stmt ::= LBRAC local_declarations:ld statement_list:sl RBRAC
+    {: RESULT = new ASTNode("COMPOUND_STMT").addChildren(ld, sl); :}
     ;
 
 local_declarations ::= local_declarations:ld var_declaration:vd
-    | 
+    {: RESULT = ld.addChild(vd); :}
+    |
+    {: RESULT = new ASTNode("LOCAL_DECLS"); :}
     ;
 
 statement_list ::= statement_list:sl statement:s
-    | 
+    {: RESULT = sl.addChild(s); :}
+    |
+    {: RESULT = new ASTNode("STMT_LIST"); :}
     ;
 
-statement ::= expression_stmt
-    | compound_stmt
-    | selection_stmt
-    | iteration_stmt
-    | return_stmt
+statement ::= expression_stmt:s {: RESULT = s; :}
+    | compound_stmt:s {: RESULT = s; :}
+    | selection_stmt:s {: RESULT = s; :}
+    | iteration_stmt:s {: RESULT = s; :}
+    | return_stmt:s {: RESULT = s; :}
     ;
 
-expression_stmt ::= expression SEMICOLON
+expression_stmt ::= expression:e SEMICOLON
+    {: RESULT = new ASTNode("EXPR_STMT").addChild(e); :}
     | SEMICOLON
+    {: RESULT = new ASTNode("EMPTY_STMT"); :}
     ;
 
-selection_stmt ::= IF LPAREN expression RPAREN statement
-    | IF LPAREN expression RPAREN statement ELSE statement
+selection_stmt ::= IF LPAREN expression:e RPAREN statement:s
+    {: RESULT = new ASTNode("IF").addChildren(e, s); :} %prec IF
+    | IF LPAREN expression:e RPAREN statement:s1 ELSE statement:s2
+    {: RESULT = new ASTNode("IF_ELSE").addChildren(e, s1, s2); :}
     ;
 
-iteration_stmt ::= WHILE LPAREN expression RPAREN statement
+iteration_stmt ::= WHILE LPAREN expression:e RPAREN statement:s
+    {: RESULT = new ASTNode("WHILE").addChildren(e, s); :}
     ;
 
 return_stmt ::= RETURN SEMICOLON
-    | RETURN expression SEMICOLON
+    {: RESULT = new ASTNode("RETURN"); :}
+    | RETURN expression:e SEMICOLON
+    {: RESULT = new ASTNode("RETURN").addChild(e); :}
     ;
 
-expression ::= var ASSIGN expression
-    | simple_expression
+expression ::= var:v ASSIGN expression:e
+    {: RESULT = new ASTNode("ASSIGN").addChildren(v, e); :}
+    | simple_expression:se
+    {: RESULT = se; :}
     ;
 
-var ::= ID
-    | ID LBRACK expression RBRACK
+var ::= ID:id
+    {: RESULT = new ASTNode("VAR", id); :}
+    | ID:id LBRACK expression:e RBRACK
+    {: RESULT = new ASTNode("ARRAY_ACCESS", id).addChild(e); :}
     ;
 
-simple_expression ::= additive_expression relop additive_expression
-    | additive_expression
+simple_expression ::= additive_expression:ae1 relop:op additive_expression:ae2
+    {: RESULT = op.addChildren(ae1, ae2); :}
+    | additive_expression:ae
+    {: RESULT = ae; :}
     ;
 
-relop ::= LESSTHANEQ
-    | LESSTHAN
-    | GREATERTHAN
-    | GREATERTHANEQ
-    | EQUAL
-    | NOTEQUAL
+relop ::= LESSTHANEQ:op {: RESULT = new ASTNode("OP", op); :}
+    | LESSTHAN:op       {: RESULT = new ASTNode("OP", op); :}
+    | GREATERTHAN:op    {: RESULT = new ASTNode("OP", op); :}
+    | GREATERTHANEQ:op  {: RESULT = new ASTNode("OP", op); :}
+    | EQUAL:op          {: RESULT = new ASTNode("OP", op); :}
+    | NOTEQUAL:op       {: RESULT = new ASTNode("OP", op); :}
     ;
 
-additive_expression ::= additive_expression addop term
-    | term
+additive_expression ::= additive_expression:ae addop:op term:t
+    {: RESULT = op.addChildren(ae, t); :}
+    | term:t
+    {: RESULT = t; :}
     ;
 
-addop ::= PLUS
-    | MINUS
+addop ::= PLUS:op  {: RESULT = new ASTNode("OP", op); :}
+    | MINUS:op     {: RESULT = new ASTNode("OP", op); :}
     ;
 
-term ::= term mulop factor
-    | factor
+term ::= term:t mulop:op factor:f
+    {: RESULT = op.addChildren(t, f); :}
+    | factor:f
+    {: RESULT = f; :}
     ;
 
-mulop ::= STAR
-    | SLASH
+mulop ::= STAR:op  {: RESULT = new ASTNode("OP", op); :}
+    | SLASH:op     {: RESULT = new ASTNode("OP", op); :}
     ;
 
-factor ::= LPAREN expression RPAREN
-    | var
-    | call
-    | NUM
+factor ::= LPAREN expression:e RPAREN
+    {: RESULT = e; :}
+    | var:v
+    {: RESULT = v; :}
+    | call:c
+    {: RESULT = c; :}
+    | NUM:n
+    {: RESULT = new ASTNode("NUM", n); :}
     ;
 
-call ::= ID LPAREN args RPAREN
-       ;
+call ::= ID:id LPAREN args:a RPAREN
+    {: RESULT = new ASTNode("CALL", id).addChild(a); :}
+    ;
 
-args ::= arg_list
+args ::= arg_list:al
+    {: RESULT = al; :}
     |
+    {: RESULT = new ASTNode("ARGS"); :}
     ;
 
-arg_list ::= arg_list COMMA expression
-    | expression
+arg_list ::= arg_list:al COMMA expression:e
+    {: RESULT = al.addChild(e); :}
+    | expression:e
+    {: RESULT = new ASTNode("ARGS").addChild(e); :}
     ;

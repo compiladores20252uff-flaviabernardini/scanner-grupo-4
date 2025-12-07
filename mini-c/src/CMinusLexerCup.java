@@ -753,12 +753,12 @@ public class CMinusLexerCup implements java_cup.runtime.Scanner {
           // fall through
           case 33: break;
           case 5:
-            { return new Symbol(Sym.STAR);
+            { return new Symbol(Sym.STAR, "*");
             }
           // fall through
           case 34: break;
           case 6:
-            { return new Symbol(Sym.PLUS);
+            { return new Symbol(Sym.PLUS, "+");
             }
           // fall through
           case 35: break;
@@ -768,17 +768,17 @@ public class CMinusLexerCup implements java_cup.runtime.Scanner {
           // fall through
           case 36: break;
           case 8:
-            { return new Symbol(Sym.MINUS);
+            { return new Symbol(Sym.MINUS, "-");
             }
           // fall through
           case 37: break;
           case 9:
-            { return new Symbol(Sym.SLASH);
+            { return new Symbol(Sym.SLASH, "/");
             }
           // fall through
           case 38: break;
           case 10:
-            { return new Symbol(Sym.NUM);
+            { return new Symbol(Sym.NUM, yytext());
             }
           // fall through
           case 39: break;
@@ -788,22 +788,22 @@ public class CMinusLexerCup implements java_cup.runtime.Scanner {
           // fall through
           case 40: break;
           case 12:
-            { return new Symbol(Sym.LESSTHAN);
+            { return new Symbol(Sym.LESSTHAN, "<");
             }
           // fall through
           case 41: break;
           case 13:
-            { return new Symbol(Sym.ASSIGN);
+            { return new Symbol(Sym.ASSIGN, "=");
             }
           // fall through
           case 42: break;
           case 14:
-            { return new Symbol(Sym.GREATERTHAN);
+            { return new Symbol(Sym.GREATERTHAN, ">");
             }
           // fall through
           case 43: break;
           case 15:
-            { return new Symbol(Sym.ID);
+            { return new Symbol(Sym.ID, yytext().toUpperCase());
             }
           // fall through
           case 44: break;
@@ -828,52 +828,52 @@ public class CMinusLexerCup implements java_cup.runtime.Scanner {
           // fall through
           case 48: break;
           case 20:
-            { return new Symbol(Sym.NOTEQUAL);
+            { return new Symbol(Sym.NOTEQUAL, "!=");
             }
           // fall through
           case 49: break;
           case 21:
-            { return new Symbol(Sym.LESSTHANEQ);
+            { return new Symbol(Sym.LESSTHANEQ, "<=");
             }
           // fall through
           case 50: break;
           case 22:
-            { return new Symbol(Sym.EQUAL);
+            { return new Symbol(Sym.EQUAL, "==");
             }
           // fall through
           case 51: break;
           case 23:
-            { return new Symbol(Sym.GREATERTHANEQ);
+            { return new Symbol(Sym.GREATERTHANEQ, ">=");
             }
           // fall through
           case 52: break;
           case 24:
-            { return new Symbol(Sym.IF);
+            { return new Symbol(Sym.IF, "IF");
             }
           // fall through
           case 53: break;
           case 25:
-            { return new Symbol(Sym.INT);
+            { return new Symbol(Sym.INT, "INT");
             }
           // fall through
           case 54: break;
           case 26:
-            { return new Symbol(Sym.ELSE);
+            { return new Symbol(Sym.ELSE, "ELSE");
             }
           // fall through
           case 55: break;
           case 27:
-            { return new Symbol(Sym.VOID);
+            { return new Symbol(Sym.VOID, "VOID");
             }
           // fall through
           case 56: break;
           case 28:
-            { return new Symbol(Sym.WHILE);
+            { return new Symbol(Sym.WHILE, "WHILE");
             }
           // fall through
           case 57: break;
           case 29:
-            { return new Symbol(Sym.RETURN);
+            { return new Symbol(Sym.RETURN, "RETURN");
             }
           // fall through
           case 58: break;
