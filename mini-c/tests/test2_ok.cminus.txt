@@ -1,4 +1,4 @@
-void foo() {
+void foo(void) {
   int a;
   int b;
   a = 10;

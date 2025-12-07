@@ -1,4 +1,4 @@
-1. A partir da raíz (./mini-c-scanner/), gera o Parser na pasta /src a partir do arquivo .cup:
+1. A partir da raíz (/mini-c), gera o Parser na pasta /src a partir do arquivo .cup:
 
 ```
 java -cp java-cup-11b.jar java_cup.Main -destdir src -interface -parser CMinusParser -symbols Sym c_minus_parser.cup
